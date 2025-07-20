@@ -3,6 +3,8 @@ from html import escape
 import pandas as pd
 from IPython.display import HTML, display
 
+from .config import JS_CDN_URL
+
 
 def dataframe_to_html(df: pd.DataFrame) -> str:
     """Minimal HTML generator matching df.to_html() with data-null attributes."""
@@ -23,22 +25,27 @@ def dataframe_to_html(df: pd.DataFrame) -> str:
         rows.append(f"<tr>{''.join(cells)}</tr>")
 
     return f"""
-        <div class="table-container">
-            <script src="https://cdn.jsdelivr.net/gh/nsarang/framedisplay@v1.0/js/framedisplay.min.js"></script>
-            <table border="1" class="frame-display-table">
-                <thead>
-                    <tr style="text-align: right;">
-                        <th></th> <!-- Index column -->
-                        {header_cols}
-                    </tr>
-                </thead>
-                <tbody>
-                    {"".join(rows)}
-                </tbody>
-            </table>
-        </div>
+        <table border="1" class="frame-display-table">
+            <thead>
+                <tr style="text-align: right;">
+                    <th></th> <!-- Index column -->
+                    {header_cols}
+                </tr>
+            </thead>
+            <tbody>
+                {"".join(rows)}
+            </tbody>
+        </table>
     """
 
 
-def frame_display(df: pd.DataFrame):
-    display(HTML(dataframe_to_html(df)))
+def frame_display(df: pd.DataFrame, jspath: str = None):
+    """Display a DataFrame as HTML in Jupyter Notebook."""
+    jspath = jspath or JS_CDN_URL
+    html_content = f"""
+        <div class="table-container">
+            <script src="{escape(jspath)}"></script>
+            {dataframe_to_html(df)}
+        </div>
+    """
+    display(HTML(html_content))
