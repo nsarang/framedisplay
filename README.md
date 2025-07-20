@@ -16,6 +16,8 @@
 
 FrameDisplay is a lightweight python package that enhances the display of Pandas DataFrames in Jupyter Notebooks. It provides interactive and visually appealing HTML tables with resizable columns, sticky headers and index, and type and null value handling.
 
+Live demo: [CodePen](https://codepen.io/B-L-A-Z-E/pen/empJPKV)
+
 ## Installation
 
 ```bash
@@ -25,6 +27,7 @@ pip install framedisplay
 ## Features
 
 - **Resizable Columns**: Interactive column resizing
+- **No Size Limit**: Display DataFrames of any size (but be aware of performance)
 - **Column type icons**: Icons indicating column types (e.g., numeric, string)
 - **Sticky Headers**: Headers stay visible during scrolling
 - **Sticky Index**: Index column remains visible while scrolling
