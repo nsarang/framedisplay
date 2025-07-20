@@ -1,0 +1,11 @@
+{
+  "name": "framedisplay",
+  "version": "1.0.0",
+  "scripts": {
+    "minify": "terser js/framedisplay.js --compress --mangle -o js/framedisplay.min.js",
+    "build": "npm run minify"
+  },
+  "devDependencies": {
+    "terser": "^5.41.0"
+  }
+}

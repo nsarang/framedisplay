@@ -30,7 +30,8 @@ clean:
 install-deps:
 	$(ACTIVATE_CMD) && \
 	$(PIP) install -r requirements/dev.txt && \
-	$(PIP) install -r requirements/app.txt
+	$(PIP) install -r requirements/app.txt && \
+	npm install
 
 install:
 	$(ACTIVATE_CMD) && \
@@ -48,7 +49,8 @@ test: pre-commit
 build: clean
 	$(ACTIVATE_CMD) && \
 	$(PIP) install wheel && \
-	$(PYTHON) setup.py sdist bdist_wheel
+	$(PYTHON) setup.py sdist bdist_wheel && \
+	npm run build
 
 check-dist: build
 	$(ACTIVATE_CMD) && \
