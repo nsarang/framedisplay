@@ -7,6 +7,10 @@
 ![License](https://img.shields.io/pypi/l/framedisplay?logo=auto)
 [![Codecov](https://codecov.io/gh/nsarang/framedisplay/branch/main/graph/badge.svg)](https://codecov.io/gh/nsarang/framedisplay)
 
+<br/>
+
+<img alt="DataFrame" src="https://raw.githubusercontent.com/nsarang/framedisplay/refs/heads/main/images/dataframe.png" width="900px" style="max-width: 100%;">
+
 </div>
 
 FrameDisplay transforms pandas DataFrames into interactive and visually appealing HTML tables with resizable columns, sticky headers and index, and type and null value handling.
