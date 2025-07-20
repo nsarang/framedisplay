@@ -24,7 +24,7 @@ def dataframe_to_html(df: pd.DataFrame) -> str:
 
     return f"""
         <div class="table-container">
-            <script src="framedisplay.js"></script>
+            <script src="https://cdn.jsdelivr.net/gh/nsarang/framedisplay@v1.0/js/framedisplay.min.js"></script>
             <table border="1" class="frame-display-table">
                 <thead>
                     <tr style="text-align: right;">
