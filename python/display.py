@@ -6,11 +6,32 @@ from IPython.display import HTML, display
 from .config import JS_CDN_URL
 
 
+def get_type(dtype):
+    """Get a simplified type name from a pandas dtype."""
+    if pd.api.types.is_integer_dtype(dtype):
+        return "int"
+    elif pd.api.types.is_float_dtype(dtype):
+        return "float"
+    elif pd.api.types.is_string_dtype(dtype):
+        return "string"
+    elif pd.api.types.is_datetime64_any_dtype(dtype):
+        return "datetime"
+    elif pd.api.types.is_bool_dtype(dtype):
+        return "bool"
+    elif isinstance(dtype, pd.CategoricalDtype):
+        return "category"
+    else:
+        return "object"
+
+
 def dataframe_to_html(df: pd.DataFrame) -> str:
     """Minimal HTML generator matching df.to_html() with data-null attributes."""
 
     # Header columns
-    header_cols = "".join(f"<th>{escape(str(col))}</th>" for col in df.columns)
+    dtypes = df.convert_dtypes().apply(get_type).values
+    header_cols = "".join(
+        f"<th data-dtype={ctype}>{escape(str(col))}</th>" for col, ctype in zip(df.columns, dtypes)
+    )
 
     # Body rows
     rows = []
