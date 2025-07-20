@@ -239,7 +239,7 @@ docstring-code-line-length = 100
 
 [tool.pytest.ini_options]
 minversion = "7.3.2"
-testpaths = "python/tests"
+testpaths = "framedisplay/tests"
 python_files = [
     "test_*.py",
     "*_test.py",

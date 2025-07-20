@@ -2,7 +2,7 @@ import re
 
 from setuptools import setup
 
-with open("python/__version__.py", encoding="utf-8") as fh:
+with open("framedisplay/__version__.py", encoding="utf-8") as fh:
     content = fh.read()
     version = re.search(r"__version__\s*=\s*([\"\'])(.+?)\1", content).group(2)
 
@@ -16,7 +16,7 @@ setup(
     name="framedisplay",
     version=version,
     packages=["framedisplay"],
-    package_dir={"framedisplay": "python"},
+    package_dir={"framedisplay": "framedisplay"},
     install_requires=app_dependencies,
     python_requires=">=3.7",
     author="Nima Sarang",
