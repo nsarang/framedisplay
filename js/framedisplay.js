@@ -1,6 +1,6 @@
 (function (global) {
   'use strict';
-  const version = '1.0.3';
+  const version = '1.1.0';
 
   // Module-level settings
   let settings = {
