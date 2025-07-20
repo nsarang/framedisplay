@@ -9,7 +9,7 @@
 
 <br/>
 
-<img alt="DataFrame" src="https://raw.githubusercontent.com/nsarang/framedisplay/refs/heads/main/images/dataframe.png" width="900px" style="max-width: 100%;">
+<img alt="DataFrame" src="https://raw.githubusercontent.com/nsarang/framedisplay/refs/heads/main/assets/dataframe.png" width="900px" style="max-width: 100%;">
 
 </div>
 
