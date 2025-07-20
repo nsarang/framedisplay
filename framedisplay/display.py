@@ -1,11 +1,25 @@
+import importlib.resources
 from html import escape
 
 import pandas as pd
 from IPython.display import HTML, display
 
+import framedisplay
+
 from .__version__ import __version__
 
+JS_FILEPATH = str(importlib.resources.files(framedisplay).joinpath("js", "framedisplay.min.js"))
 JS_CDN_URL = f"https://cdn.jsdelivr.net/gh/nsarang/framedisplay@v{__version__}/framedisplay/js/framedisplay.min.js"
+
+
+def initialize():
+    """
+    Initialize the FrameDisplay JavaScript in Jupyter Notebook.
+    This is optional and is only needed for offline usage.
+    """
+    with open(JS_FILEPATH, "r", encoding="utf-8") as f:
+        js_content = f.read()
+    display(HTML(f'<script type="text/javascript">{js_content}</script>'))
 
 
 def get_type(dtype):

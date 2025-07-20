@@ -73,6 +73,13 @@ window.FrameDisplayConfig = {
 """))
 ```
 
+If you want to use the package offline without internet access, you can initialize the module at the beginning of your notebook:
+
+```python
+import framedisplay as fd
+fd.initialize()
+```
+
 ## License
 
 MIT
