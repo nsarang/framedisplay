@@ -11,7 +11,9 @@ JS_CDN_URL = (
 
 
 def get_type(dtype):
-    """Get a simplified type name from a pandas dtype."""
+    """
+    Get a simplified type name from a pandas dtype.
+    """
     if pd.api.types.is_integer_dtype(dtype):
         return "int"
     elif pd.api.types.is_float_dtype(dtype):
@@ -29,7 +31,9 @@ def get_type(dtype):
 
 
 def dataframe_to_html(df: pd.DataFrame) -> str:
-    """Minimal HTML generator matching df.to_html() with data-null attributes."""
+    """
+    Minimal HTML generator for displaying a pandas DataFrame.
+    """
 
     # Header columns
     dtypes = df.convert_dtypes().apply(get_type).values
@@ -64,8 +68,19 @@ def dataframe_to_html(df: pd.DataFrame) -> str:
     """
 
 
-def frame_display(df: pd.DataFrame, jspath: str = None):
-    """Display a DataFrame as HTML in Jupyter Notebook."""
+def frame_display(df: pd.DataFrame, jspath: str = None, return_html: bool = False) -> None:
+    """
+    Display a DataFrame as HTML in Jupyter Notebook.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        The DataFrame to display.
+    jspath : str, optional
+        The path to the FrameDisplay JavaScript file. Defaults to a CDN URL.
+    return_html : bool, optional
+        If True, return the HTML string instead of displaying it. Defaults to False.
+    """
     jspath = jspath or JS_CDN_URL
     html_content = f"""
         <div class="table-container">
@@ -73,4 +88,6 @@ def frame_display(df: pd.DataFrame, jspath: str = None):
             {dataframe_to_html(df)}
         </div>
     """
+    if return_html:
+        return html_content
     display(HTML(html_content))
