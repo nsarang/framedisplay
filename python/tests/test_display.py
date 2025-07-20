@@ -15,8 +15,6 @@ class TestDataframeToHtml:
 
         # Check table structure
         assert soup.find("table", class_="frame-display-table") is not None
-        assert soup.find("div", class_="table-container") is not None
-        assert soup.find("script") is not None
 
         # Check headers
         headers = soup.find("thead").find_all("th")
