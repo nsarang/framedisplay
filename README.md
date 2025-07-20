@@ -5,7 +5,7 @@
 [![GitHub](https://img.shields.io/badge/nsarang-framedisplay-red?logo=github&logoSize=auto)](https://github.com/nsarang/framedisplay)
 [![PyPI](https://img.shields.io/pypi/v/framedisplay?logoSize=auto)](https://pypi.org/project/framedisplay/)
 [![Python Versions](https://img.shields.io/pypi/pyversions/framedisplay?logoSize=auto)](https://pypi.org/project/framedisplay/)
-![License](https://img.shields.io/pypi/l/framedisplay?logo=auto)
+![License](https://img.shields.io/pypi/l/framedisplay?logo=auto&refresh=123)
 [![Codecov](https://codecov.io/gh/nsarang/framedisplay/branch/main/graph/badge.svg)](https://codecov.io/gh/nsarang/framedisplay)
 
 <br/>
