@@ -8,12 +8,13 @@
 [![Codecov](https://codecov.io/gh/nsarang/framedisplay/branch/main/graph/badge.svg)](https://codecov.io/gh/nsarang/framedisplay)
 
 <br/>
+<img alt="DataFrame" src="https://raw.githubusercontent.com/nsarang/framedisplay/refs/heads/main/assets/dataframe.png" width="500px" style="max-width: 100%;">
 
-<img alt="DataFrame" src="https://raw.githubusercontent.com/nsarang/framedisplay/refs/heads/main/assets/dataframe.png" width="900px" style="max-width: 100%;">
-
+<br/>
+<br/>
 </div>
 
-FrameDisplay transforms pandas DataFrames into interactive and visually appealing HTML tables with resizable columns, sticky headers and index, and type and null value handling.
+FrameDisplay is a lightweight python package that enhances the display of Pandas DataFrames in Jupyter Notebooks. It provides interactive and visually appealing HTML tables with resizable columns, sticky headers and index, and type and null value handling.
 
 ## Installation
 
