@@ -19,17 +19,18 @@ pip install framedisplay
 
 ## Features
 
-- **Resizable Columns**: Interactive column resizing with visual feedback
+- **Resizable Columns**: Interactive column resizing
+- **Column type icons**: Icons indicating column types (e.g., numeric, string)
 - **Sticky Headers**: Headers stay visible during scrolling
-- **Smart Null Handling**: Null values are elegantly styled
-- **Zero Configuration**: Works out of the box
+- **Sticky Index**: Index column remains visible while scrolling
+- **Null Handling**: Null values are elegantly styled
 
 ## Usage
 
 ```python
 import pandas as pd
 import numpy as np
-from framedisplay import frame_display
+import framedisplay as fd
 
 df = pd.DataFrame({
     'Name': ['Alice', 'Bob', np.nan],
@@ -37,7 +38,26 @@ df = pd.DataFrame({
     'Score': [95.5, 87.2, np.nan]
 })
 
-frame_display(df)
+fd.frame_display(df)
+```
+
+You can also configure the JS script in Jupyter Notebooks before displaying the DataFrame:
+
+```python
+from IPython.display import display, HTML
+
+display(HTML("""
+<script>
+window.FrameDisplayConfig = {
+    minColumnWidth: 30,
+    resizerWidth: 8,
+    resizerHoverColor: 'rgba(0,0,0,0.1)',
+    showHoverEffect: true,
+    autoInit: true,
+    allowReInit: true
+};
+</script>
+"""))
 ```
 
 ## License
