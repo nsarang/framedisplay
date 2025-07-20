@@ -3,7 +3,11 @@ from html import escape
 import pandas as pd
 from IPython.display import HTML, display
 
-from .config import JS_CDN_URL
+from .__version__ import __version__
+
+JS_CDN_URL = (
+    f"https://cdn.jsdelivr.net/gh/nsarang/framedisplay@v{__version__}/js/framedisplay.min.js"
+)
 
 
 def get_type(dtype):

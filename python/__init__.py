@@ -1,5 +1,4 @@
-__version__ = "1.0.3"
-
+from .__version__ import __version__
 from .display import (
     dataframe_to_html,
     frame_display,

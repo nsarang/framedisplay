@@ -2,7 +2,7 @@ import re
 
 from setuptools import setup
 
-with open("python/__init__.py", encoding="utf-8") as fh:
+with open("python/__version__.py", encoding="utf-8") as fh:
     content = fh.read()
     version = re.search(r"__version__\s*=\s*([\"\'])(.+?)\1", content).group(2)
 
