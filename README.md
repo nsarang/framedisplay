@@ -9,7 +9,7 @@
 
 </div>
 
-FrameDisplay transforms pandas DataFrames into beautiful, interactive HTML tables with resizable columns, sticky headers, and elegant null value handling.
+FrameDisplay transforms pandas DataFrames into interactive and visually appealing HTML tables with resizable columns, sticky headers and index, and type and null value handling.
 
 ## Installation
 
@@ -24,6 +24,10 @@ pip install framedisplay
 - **Sticky Headers**: Headers stay visible during scrolling
 - **Sticky Index**: Index column remains visible while scrolling
 - **Null Handling**: Null values are elegantly styled
+
+**To Do:**
+- Virtual scrolling for large DataFrames
+- Sortable columns
 
 ## Usage
 
