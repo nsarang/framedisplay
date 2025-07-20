@@ -1,5 +1,6 @@
 (function (global) {
   'use strict';
+  const version = '1.0.3';
 
   // Module-level settings
   let settings = {
@@ -9,13 +10,15 @@
     resizerHoverColor: 'rgba(0,0,0,0.1)',
     showHoverEffect: true,
     autoInit: true,
-    allowReInit: true, // NOTE: setting to true due to jupyter notebook issues
-    ...(global.FrameDisplayConfig || {}) // merge any global config
+    allowReInit: false,
+    ...(global.FrameDisplayConfig || {}), // merge any global config
   };
 
   // Prevent multiple executions
   if (global.FrameDisplay) {
-    if (settings.allowReInit === true && typeof global.FrameDisplay.destroy === 'function') {
+    const existingVersion = global.FrameDisplay.version || '0.0.0';
+
+    if (settings.allowReInit === true || version.localeCompare(existingVersion, undefined, { numeric: true }) > 0) {
       // Clean up previous instance and continue
       global.FrameDisplay.destroy();
     } else {
@@ -343,6 +346,6 @@
   global.FrameDisplay = {
     init: init,
     destroy: destroyAll,
-    version: '1.0.2'
+    version: version,
   };
 })(typeof window !== 'undefined' ? window : this);
