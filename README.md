@@ -37,6 +37,7 @@ pip install framedisplay
 **To Do:**
 - Virtual scrolling for large DataFrames
 - Sortable columns
+- Add tooltip for truncated cells
 
 ## Usage
 
