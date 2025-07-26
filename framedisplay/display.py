@@ -103,3 +103,17 @@ def frame_display(df: pd.DataFrame, jspath: str = None, return_html: bool = Fals
     if return_html:
         return html_content
     display(HTML(html_content))
+
+
+def integrate_with_pandas():
+    """
+    This function patches the pandas DataFrame class to use FrameDisplay for HTML
+    rendering in Jupyter notebooks and other environments that support rich display.
+    After calling this function, all DataFrames will automatically use FrameDisplay
+    when displayed in notebook cells.
+
+    Notes
+    -----
+    This modifies the global pandas DataFrame._repr_html_ method.
+    """
+    pd.DataFrame._repr_html_ = lambda df: frame_display(df, return_html=True)

@@ -60,6 +60,19 @@ df = pd.DataFrame({
 fd.frame_display(df)
 ```
 
+You can also enable FrameDisplay globally for all DataFrames in Jupyter by calling `fd.integrate_with_pandas()`:
+
+```python
+import pandas as pd
+import framedisplay as fd
+
+# Enable FrameDisplay for all DataFrames
+fd.integrate_with_pandas()
+
+# This will now display using FrameDisplay
+df
+```
+
 ## How it Works
 
 FrameDisplay renders your Pandas DataFrame into an HTML table and injects custom CSS and JavaScript to enable interactive features directly in your Jupyter Notebook or browser.
