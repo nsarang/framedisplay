@@ -1,6 +1,6 @@
 (function (global) {
   'use strict';
-  const version = '1.1.1';
+  const version = '1.1.2';
 
   // Module-level settings
   let settings = {
@@ -65,10 +65,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     border: 0.5px solid #D1D9E1;
-    --data-grid-cell-selection-border-color: #2272B4;
-    --data-grid-separator-color: #D1D9E1;
-    --data-grid-cell-vertical-padding: 4px;
-    --data-grid-cell-horizontal-padding: 8px;
 }
 /* Null cell styling */
 .frame-display-table tbody code.null-cell {
@@ -90,16 +86,17 @@
     background-color: #f5f5f5;
 }
 
-/* Sticky header */
+/* Header */
 .frame-display-table thead tr th {
     position: sticky;
     top: 0;
-    padding: 0.75em 1.0em 0.75em 2.5em;
+    padding: 0.75em 1.5em 0.75em 2.5em;
     text-align: left !important;
     background-color: #f2f2f2;
     font-weight: 600;
     z-index: 10;
     cursor: pointer;
+    user-select: none;
     border-collapse: separate;
     box-shadow: inset 0px 1px 0px 0px #D1D9E1;
 }
@@ -133,6 +130,8 @@
 }
 .frame-display-table thead th[data-dtype="bool"]::before {
     background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDE2IDE2Ij48cGF0aCBmaWxsPSJjdXJyZW50Q29sb3IiIGZpbGwtcnVsZT0iZXZlbm9kZCIgZD0iTTggMTNBNSA1IDAgMSAxIDggM2E1IDUgMCAwIDEgMCAxMG0tMi44MjgtMi4xNzJhNCA0IDAgMCAxIDUuNjU2LTUuNjU2Yy4wMDQuMDEzLTUuNjQ1IDUuNjc0LTUuNjU2IDUuNjU2Ii8+PC9zdmc+');
+    width: 1.7em;
+    height: 1.7em;
 }
 .frame-display-table thead th[data-dtype="category"]::before {
     background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJjdXJyZW50Q29sb3IiIGQ9Ik03LjQyNSA5LjQ3NUwxMS4xNSAzLjRxLjE1LS4yNS4zNzUtLjM2M1QxMiAyLjkyNXQuNDc1LjExM3QuMzc1LjM2MmwzLjcyNSA2LjA3NXEuMTUuMjUuMTUuNTI1dC0uMTI1LjV0LS4zNS4zNjN0LS41MjUuMTM3aC03LjQ1cS0uMyAwLS41MjUtLjEzN1Q3LjQgMTAuNXQtLjEyNS0uNXQuMTUtLjUyNU0xNy41IDIycS0xLjg3NSAwLTMuMTg3LTEuMzEyVDEzIDE3LjV0MS4zMTMtMy4xODdUMTcuNSAxM3QzLjE4OCAxLjMxM1QyMiAxNy41dC0xLjMxMiAzLjE4OFQxNy41IDIyTTMgMjAuNXYtNnEwLS40MjUuMjg4LS43MTJUNCAxMy41aDZxLjQyNSAwIC43MTMuMjg4VDExIDE0LjV2NnEwIC40MjUtLjI4OC43MTNUMTAgMjEuNUg0cS0uNDI1IDAtLjcxMi0uMjg4VDMgMjAuNW0xNC41LS41cTEuMDUgMCAxLjc3NS0uNzI1VDIwIDE3LjV0LS43MjUtMS43NzVUMTcuNSAxNXQtMS43NzUuNzI1VDE1IDE3LjV0LjcyNSAxLjc3NVQxNy41IDIwTTUgMTkuNWg0di00SDV6TTEwLjA1IDloMy45TDEyIDUuODV6bTcuNDUgOC41Ii8+PC9zdmc+');
@@ -164,6 +163,19 @@
 .frame-display-table.resizing * {
   user-select: none !important;
 }
+
+/* Sort arrows */
+.frame-display-table thead th.sort-asc::after {
+    content: ' ↓';
+    font-size: 1em;
+    opacity: 0.7;
+}
+
+.frame-display-table thead th.sort-desc::after {
+    content: ' ↑';
+    font-size: 1em;
+    opacity: 0.7;
+}
 `;
     const style = document.createElement('style');
     style.id = 'frame-display-styles';
@@ -173,11 +185,7 @@
 
   // ------------ CORE FUNCTIONALITY ------------
   function addColumnResizing(table) {
-    if (table.hasAttribute('data-initialized')) {
-      return;
-    }
-
-    const headers = table.querySelectorAll('th');
+    const headers = table.querySelectorAll('thead th');
     headers.forEach((header, index) => {
       if (header.querySelector('.column-resizer')) return;
 
@@ -194,6 +202,8 @@
         zIndex: '20'
       });
 
+      header.appendChild(resizer);
+
       // Add hover effect if enabled
       if (settings.showHoverEffect) {
         resizer.addEventListener('mouseover', () => {
@@ -204,18 +214,25 @@
         });
       }
 
-      header.appendChild(resizer);
+      // Prevent sort on resizer click
+      resizer.addEventListener('click', function (e) {
+        e.stopPropagation();
+      });
 
       // Resize functionality
       let startX, startWidth;
-      resizer.addEventListener('mousedown', function (e) {
+      resizer.addEventListener('pointerdown', function (e) {
         startX = e.clientX;
         startWidth = parseFloat(window.getComputedStyle(header).width);
-        document.addEventListener('mousemove', handleResize);
-        document.addEventListener('mouseup', stopResize);
+
+        resizer.setPointerCapture(e.pointerId);
+        resizer.addEventListener('pointermove', handleResize);
+        resizer.addEventListener('pointerup', stopResize, { once: true });
+
         table.classList.add('resizing');
         document.body.style.userSelect = 'none';
         e.preventDefault();
+        e.stopPropagation();
       });
 
       function handleResize(e) {
@@ -223,6 +240,19 @@
         // Update the header cell width
         header.style.setProperty('width', newWidth + 'px', 'important');
         header.style.setProperty('min-width', newWidth + 'px', 'important');
+
+        // Scroll to keep header's right edge at container's right edge
+        const container = table.closest('.table-container');
+        if (container) {
+          const headerRect = header.getBoundingClientRect();
+          const containerRect = container.getBoundingClientRect();
+
+          // If header extends beyond visible area, scroll to align right edges
+          const overshoot = headerRect.right - containerRect.right;
+          if (overshoot > 0) {
+            container.scrollLeft += overshoot;
+          }
+        }
 
         if (header.getAttribute("data-released") != "true") {
           header.style.setProperty('max-width', 0);
@@ -236,41 +266,169 @@
         }
       }
 
-      function stopResize() {
-        document.removeEventListener('mousemove', handleResize);
-        document.removeEventListener('mouseup', stopResize);
-        table.classList.remove('resizing');
+      function stopResize(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        resizer.releasePointerCapture(e.pointerId);
+        resizer.removeEventListener('pointermove', handleResize);
+        resizer.removeEventListener('pointerup', stopResize);
         document.body.style.userSelect = '';
+        setTimeout(() => table.classList.remove('resizing'), 0);
       }
     });
+  }
 
+  function addTooltips(table) {
+    table.querySelectorAll('th, td').forEach(cell => {
+      const text = cell.textContent.trim();
+      if (text) {
+        cell.title = text; // Show full text on hover
+      }
+    });
+  }
+
+  function addSorting(table) {
+    // Add click handlers to data headers (skip first - it's the index column)
+    table.querySelectorAll('thead th').forEach((th, colIndex) => {
+      th.addEventListener('dblclick', (e) => {
+        e.preventDefault(); // Prevent double-click text selection
+      });
+      th.addEventListener('click', () => {
+        if (table.classList.contains('resizing')) {
+          return; // Ignore clicks during resizing
+        }
+        sortColumn(table, colIndex + 1, th);
+      });
+    });
+  }
+
+  function sortColumn(table, colIndex, header) {
+    const sortData = table.dataset.sort || '1-asc';
+    const [currentCol, currentState] = sortData.split('-');
+    const currentColNum = parseInt(currentCol);
+
+    // Determine next state for this column
+    const nextState = (currentColNum === colIndex && currentState === 'asc') ? 'desc' :
+      (currentColNum === colIndex && currentState === 'desc') ? 'none' : 'asc';
+
+    // Clear previous sort indicator
+    if (currentColNum !== colIndex) {
+      const prevHeader = table.querySelector(`thead th:nth-child(${currentColNum})`);
+      if (prevHeader) clearSortIndicator(prevHeader);
+    }
+
+    table.dataset.sort = `${colIndex}-${nextState}`;
+    const tbody = table.querySelector('tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+
+    if (nextState === 'none') {
+      // Sort by index column to restore original order
+      const sortedRows = sortRowsByColumn(rows, 1, 'asc', 'object');
+      sortedRows.forEach(row => tbody.appendChild(row));
+    } else {
+      const sortedRows = sortRowsByColumn(rows, colIndex, nextState, header.dataset.dtype);
+      sortedRows.forEach(row => tbody.appendChild(row));
+    }
+
+    updateSortIndicator(header, nextState);
+  }
+
+  function updateSortIndicator(header, state) {
+    clearSortIndicator(header);
+    if (state !== 'none') {
+      header.classList.add(`sort-${state}`);
+    }
+  }
+
+  function clearSortIndicator(header) {
+    header.classList.remove('sort-asc', 'sort-desc');
+  }
+
+  function sortRowsByColumn(rows, colIndex, direction, dtype) {
+    const rowData = rows.map(row => {
+      const cell = row.querySelector(`td:nth-child(${colIndex}), th:nth-child(${colIndex})`);
+      const isNull = cell?.querySelector('.null-cell');
+      const rawValue = cell?.textContent.trim() || '';
+
+      let sortValue = rawValue;
+      if (!isNull && rawValue) {
+        switch (dtype) {
+          case 'int':
+          case 'float':
+            sortValue = parseFloat(rawValue) || rawValue;
+            break;
+          case 'datetime':
+            sortValue = new Date(rawValue).getTime() || rawValue;
+            break;
+          case 'bool':
+            sortValue = /^(true|1|yes|on|t|y)$/i.test(rawValue) ? 1 : 0;
+            break;
+          default:
+            if (colIndex === 1) { // Index column
+              sortValue = parseFloat(rawValue) || rawValue;
+            }
+        }
+      }
+
+      return { row, isNull, sortValue };
+    });
+
+    return rowData
+      .sort((a, b) => {
+        if (a.isNull !== b.isNull) return a.isNull ? 1 : -1;
+
+        const result = typeof a.sortValue === 'number'
+          ? a.sortValue - b.sortValue
+          : a.sortValue.localeCompare(b.sortValue, undefined, { numeric: true, sensitivity: 'base' });
+
+        return direction === 'asc' ? result : -result;
+      })
+      .map(item => item.row);
+  }
+
+  function processTable(table) {
+    if (table.hasAttribute('data-initialized')) {
+      return;
+    }
+    addColumnResizing(table);
+    addTooltips(table);
+    addSorting(table);
     table.setAttribute('data-initialized', 'true');
   }
 
   // ------------ PUBLIC API ------------
-  function init(config = {}) {
+  function setup(config = {}) {
     injectStyles();
     // Update module-level settings
     settings = {
       ...settings,
       ...config
     };
-    document.querySelectorAll(settings.tableSelector).forEach(table => {
-      addColumnResizing(table);
-    });
+    document.querySelectorAll(settings.tableSelector).forEach(processTable);
   }
 
-  function destroyAll() {
+  function destroy() {
     if (observer) {
       observer.disconnect();
       observer = null;
     }
-
     // Find and clean up all processed tables
     document.querySelectorAll('.frame-display-table[data-initialized]').forEach(table => {
+      // Clean up resizers
       table.querySelectorAll('.column-resizer').forEach(resizer => {
-        resizer.remove(); // also removes event listeners
+        resizer.remove();
       });
+
+      // Clean up sorting
+      table.querySelectorAll('thead th').forEach(th => {
+        const newTh = th.cloneNode(true); // to remove event listeners
+        th.parentNode.replaceChild(newTh, th);
+        newTh.classList.remove('sort-asc', 'sort-desc');
+      });
+
+      if (table.dataset.sort) {
+        delete table.dataset.sort;
+      }
 
       table.removeAttribute('data-initialized');
       table.classList.remove('resizing');
@@ -305,11 +463,7 @@
               }
               tables.push(...node.querySelectorAll('.frame-display-table:not([data-initialized])'));
 
-              tables.forEach(table => {
-                if (!table.hasAttribute('data-initialized')) {
-                  addColumnResizing(table);
-                }
-              });
+              tables.forEach(processTable);
             }
           });
         }
@@ -331,7 +485,7 @@
       return;
     }
     // Auto-setup with global config
-    init();
+    setup();
     // Also watch for new tables being added
     createTableWatcher();
   }
@@ -344,8 +498,8 @@
 
   // ------------ EXPORTS ------------
   global.FrameDisplay = {
-    init: init,
-    destroy: destroyAll,
+    setup: setup,
+    destroy: destroy,
     version: version,
   };
 })(typeof window !== 'undefined' ? window : this);

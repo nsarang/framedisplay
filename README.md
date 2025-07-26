@@ -1,4 +1,4 @@
-# FrameDisplay: Beautiful DataFrame Display
+# FrameDisplay: Enhanced DataFrame Display
 
 <div align="center">
 
@@ -15,7 +15,10 @@
 <br/>
 </div>
 
-FrameDisplay is a lightweight python package that enhances the display of Pandas DataFrames in Jupyter Notebooks. It provides interactive and visually appealing HTML tables with resizable columns, sticky headers and index, and type and null value handling.
+FrameDisplay is a lightweight Python package for rendering Pandas DataFrames as interactive HTML tables within Jupyter Notebooks and JupyterLab. It improves the default DataFrame display by adding features such as resizable columns, client-side sorting, sticky headers and index for improved navigation, data type indicators in column headers, distinct styling for null values, and tooltips for viewing complete cell content.
+
+I work extensively with Pandas in my personal projects and have always wanted something similar to Databricks' display function, but for Jupyter. The existing open-source alternatives were either too heavyweight, lacked the visual appeal or didn't check all the boxes I needed. So I built this package to bridge that gap. It's not perfect yet, but I like it more than the alternatives :)
+
 
 Live demo: [CodePen](https://codepen.io/B-L-A-Z-E/pen/empJPKV)
 
@@ -27,19 +30,22 @@ pip install framedisplay
 
 ## Features
 
-- **Resizable Columns**: Interactive column resizing
-- **No Size Limit**: Display DataFrames of any size (but be aware of performance)
-- **Column type icons**: Icons indicating column types (e.g., numeric, string)
-- **Sticky Headers**: Headers stay visible during scrolling
-- **Sticky Index**: Index column remains visible while scrolling
-- **Null Handling**: Null values are elegantly styled
+- **Resizable Columns**: Drag column dividers to resize them.
+- **Sortable Columns**: Click on column headers to sort the data.
+- **Sticky Header & Index**: The header and index rows remain visible during vertical and horizontal scrolling.
+- **Column Type Icons**: Icons in headers indicate data types (numeric, string, etc.).
+- **Null Value Styling**: `null` values are visually distinct.
+- **Tooltips**: Hover over cell content to see the full value.
+- **No Size Limit**: Display DataFrames of any size (be mindful of browser performance with very large tables).
 
-**To Do:**
-- Virtual scrolling for large DataFrames
-- Sortable columns
-- Add tooltip for truncated cells
+
+**Roadmap**
+- Virtual scrolling for improved performance with very large DataFrames.
+- Additional customization options (e.g., theming).
 
 ## Usage
+
+To display a DataFrame, simply import `framedisplay` and use the `frame_display` function:
 
 ```python
 import pandas as pd
@@ -55,7 +61,13 @@ df = pd.DataFrame({
 fd.frame_display(df)
 ```
 
-You can also configure the JS script in Jupyter Notebooks before displaying the DataFrame:
+## How it Works
+
+FrameDisplay renders your Pandas DataFrame into an HTML table and injects custom CSS and JavaScript to enable interactive features directly in your Jupyter Notebook or browser.
+
+## Configuration (Optional)
+
+You can customize the behavior and appearance by setting a global `window.FrameDisplayConfig` object in a Jupyter cell before displaying:
 
 ```python
 from IPython.display import display, HTML
@@ -74,11 +86,15 @@ window.FrameDisplayConfig = {
 """))
 ```
 
-If you want to use the package offline without internet access, you can initialize the module at the beginning of your notebook:
+## Offline Mode
+
+If you are working in an environment without internet access, you can inject the necessary JavaScript and CSS locally by calling `initialize()` at the start of your notebook. This bundles the required assets into the notebook itself.
 
 ```python
 import framedisplay as fd
 fd.initialize()
+
+# Now you can use fd.frame_display(df) without needing an internet connection
 ```
 
 ## License
