@@ -22,12 +22,6 @@ I work extensively with Pandas in my personal projects and have always wanted so
 
 Live demo: [CodePen](https://codepen.io/B-L-A-Z-E/pen/empJPKV)
 
-## Installation
-
-```bash
-pip install framedisplay
-```
-
 ## Features
 
 - **Resizable Columns**: Drag column dividers to resize them.
@@ -38,10 +32,15 @@ pip install framedisplay
 - **Tooltips**: Hover over cell content to see the full value.
 - **No Size Limit**: Display DataFrames of any size (be mindful of browser performance with very large tables).
 
-
 **Roadmap**
 - Virtual scrolling for improved performance with very large DataFrames.
 - Additional customization options (e.g., theming).
+
+## Installation
+
+```bash
+pip install framedisplay
+```
 
 ## Usage
 
