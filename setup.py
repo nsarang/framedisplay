@@ -17,6 +17,13 @@ setup(
     version=version,
     packages=["framedisplay"],
     package_dir={"framedisplay": "framedisplay"},
+    package_data={
+        "framedisplay": [
+            "js/**/*.js",
+            "js/**/*.css",
+        ]
+    },
+    include_package_data=True,
     install_requires=app_dependencies,
     python_requires=">=3.7",
     author="Nima Sarang",
