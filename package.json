@@ -2,10 +2,13 @@
   "name": "framedisplay",
   "version": "1.0.0",
   "scripts": {
-    "minify": "terser framedisplay/js/framedisplay.js --compress --mangle -o framedisplay/js/framedisplay.min.js && echo >> framedisplay/js/framedisplay.min.js",
-    "build": "npm run minify"
+    "build:dev": "esbuild framedisplay/js/src/main.js --bundle --outfile=framedisplay/js/framedisplay.js --loader:.css=text --keep-names",
+    "build:min": "esbuild framedisplay/js/src/main.js --bundle --minify --outfile=framedisplay/js/framedisplay.min.js --loader:.css=text",
+    "build": "npm run build:dev && npm run build:min",
+    "watch": "nodemon --watch framedisplay/js/src --watch framedisplay/css --ext js,css --exec \"npm run build\""
   },
   "devDependencies": {
-    "terser": "^5.41.0"
+    "esbuild": "^0.25.8",
+    "nodemon": "^3.0.0"
   }
 }
