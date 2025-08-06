@@ -2,9 +2,9 @@ import re
 
 from setuptools import setup
 
-with open("framedisplay/__version__.py", encoding="utf-8") as fh:
+with open("framedisplay/js/src/version.js", encoding="utf-8") as fh:
     content = fh.read()
-    version = re.search(r"__version__\s*=\s*([\"\'])(.+?)\1", content).group(2)
+    version = re.search(r"const\s+version\s*=\s*['\"]([^'\"]+)['\"]", content).group(1)
 
 with open("README.md", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -21,7 +21,7 @@ setup(
     python_requires=">=3.7",
     author="Nima Sarang",
     author_email="contact@nimasarang.com",
-    description="Post-mortem debugging tools for Python",
+    description="Enhanced DataFrame Display",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/nsarang/framedisplay",
@@ -40,7 +40,9 @@ setup(
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3.13",
-        "Topic :: Software Development :: Debuggers",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+        "Topic :: Scientific/Engineering :: Information Analysis",
+        "Topic :: Text Processing :: Markup :: HTML",
     ],
-    keywords="debugging, post-mortem, traceback, exception, development",
+    keywords="dataframe display pandas jupyter notebook",
 )
