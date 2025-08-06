@@ -1,4 +1,13 @@
 repos:
+  - repo: local
+    hooks:
+      - id: build-js
+        name: Build JS bundle
+        entry: npm run build
+        language: system
+        files: ^framedisplay/js/.*\.(js|css)$
+        pass_filenames: false
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
