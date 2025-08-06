@@ -80,7 +80,9 @@ def dataframe_to_html(df: pd.DataFrame) -> str:
     """
 
 
-def frame_display(df: pd.DataFrame, jspath: str = None, return_html: bool = False) -> None:
+def frame_display(
+    df: pd.DataFrame, jspath: str = None, embed_style: str = None, return_html: bool = False
+) -> None:
     """
     Display a DataFrame as HTML in Jupyter Notebook.
 
@@ -89,14 +91,45 @@ def frame_display(df: pd.DataFrame, jspath: str = None, return_html: bool = Fals
     df : pd.DataFrame
         The DataFrame to display.
     jspath : str, optional
-        The path to the FrameDisplay JavaScript file. Defaults to a CDN URL.
+        The path to the FrameDisplay JavaScript file. Defaults to the CDN URL.
+    embed_style : str, optional
+        Method for including JavaScript and CSS resources:
+        - None: Reference JavaScript from the external source specified by `jspath` (default)
+        - 'css_only': Embed only CSS styles inline. This is useful for email clients that don't support external scripts.
+        - 'all': Embed both JavaScript and CSS inline
     return_html : bool, optional
         If True, return the HTML string instead of displaying it. Defaults to False.
+
+    Returns
+    -------
+    str or None
+        If return_html is True, returns the HTML string. Otherwise, displays the content
+        and returns None.
     """
-    jspath = jspath or JS_CDN_URL
+    if embed_style is not None:
+        if embed_style == "css_only":
+            script_content = f"""
+            <style>
+                {(importlib.resources.files(framedisplay) / "js/src/styles.css").read_text()}
+            </style>
+            """
+        elif embed_style == "all":
+            script_content = f"""
+            <script type="text/javascript">
+                {(importlib.resources.files(framedisplay) / "js/framedisplay.min.js").read_text()}
+            </script>
+            """
+        else:
+            raise ValueError(
+                "Invalid value for `embed_style`. Must be 'all' or 'css_only' or None."
+            )
+    else:
+        jspath = jspath or JS_CDN_URL
+        script_content = f"<script src='{escape(jspath)}'></script>"
+
     html_content = f"""
         <div class="table-container">
-            <script src="{escape(jspath)}"></script>
+            {script_content}
             {dataframe_to_html(df)}
         </div>
     """
