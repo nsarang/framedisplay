@@ -162,7 +162,7 @@
   var version;
   var init_version = __esm({
     "framedisplay/js/src/version.js"() {
-      version = "1.1.5";
+      version = "1.1.6";
     }
   });
 
