@@ -22,10 +22,11 @@ def initialize():
     display(HTML(f'<script type="text/javascript">{js_content}</script>'))
 
 
-def get_type(dtype):
+def get_type(series: pd.Series) -> str:
     """
     Get a simplified type name from a pandas dtype.
     """
+    dtype = series.dtype if hasattr(series, "dtype") else series
     if pd.api.types.is_integer_dtype(dtype):
         return "int"
     elif pd.api.types.is_float_dtype(dtype):
@@ -138,15 +139,20 @@ def frame_display(
     display(HTML(html_content))
 
 
-def integrate_with_pandas():
+def integrate_with_pandas(**kwargs):
     """
     This function patches the pandas DataFrame class to use FrameDisplay for HTML
     rendering in Jupyter notebooks and other environments that support rich display.
     After calling this function, all DataFrames will automatically use FrameDisplay
     when displayed in notebook cells.
 
+    Parameters
+    ----------
+    **kwargs : dict
+        Additional keyword arguments to pass to `frame_display`.
+
     Notes
     -----
     This modifies the global pandas DataFrame._repr_html_ method.
     """
-    pd.DataFrame._repr_html_ = lambda df: frame_display(df, return_html=True)
+    pd.DataFrame._repr_html_ = lambda df: frame_display(df, return_html=True, **kwargs)
