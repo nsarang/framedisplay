@@ -1,6 +1,6 @@
 import re
 
-from setuptools import setup
+from setuptools import find_packages, setup
 
 with open("framedisplay/js/src/version.js", encoding="utf-8") as fh:
     content = fh.read()
@@ -15,7 +15,7 @@ with open("requirements/app.txt", encoding="utf-8") as fh:
 setup(
     name="framedisplay",
     version=version,
-    packages=["framedisplay"],
+    packages=find_packages(include=["framedisplay*"]),
     package_dir={"framedisplay": "framedisplay"},
     package_data={
         "framedisplay": [
