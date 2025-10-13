@@ -31,6 +31,7 @@ Live demo: [CodePen](https://codepen.io/B-L-A-Z-E/pen/empJPKV)
 - **Null Value Styling**: `null` values are visually distinct.
 - **Tooltips**: Hover over cell content to see the full value.
 - **No Size Limit**: Display DataFrames of any size (be mindful of browser performance with very large tables).
+- **Customizable Themes**: Choose from several built-in themes or add your own CSS.
 
 **Roadmap**
 - Virtual scrolling for improved performance with very large DataFrames.
@@ -77,26 +78,65 @@ df
 
 FrameDisplay renders your Pandas DataFrame into an HTML table and injects custom CSS and JavaScript to enable interactive features directly in your Jupyter Notebook or browser.
 
-## Configuration (Optional)
+## Configuration Options
 
-You can customize the behavior and appearance by setting a global `window.FrameDisplayConfig` object in a Jupyter cell before displaying:
+FrameDisplay uses global configuration (`window.FrameDisplayConfig`) that applies to all future table renderings in the notebook/browser session. Once you set a configuration option, it persists until you explicitly reset it or change it.
+
 
 ```python
-from IPython.display import display, HTML
+import framedisplay as fd
 
-display(HTML("""
-<script>
-window.FrameDisplayConfig = {
-    minColumnWidth: 30,
-    resizerWidth: 8,
-    resizerHoverColor: 'rgba(0,0,0,0.1)',
-    showHoverEffect: true,
-    autoInit: true,
-    allowReInit: true
-};
-</script>
-"""))
+fd.configure({
+    'theme': 'dark',
+    'enableSorting': False
+})
+
+# All subsequent calls use this config
+fd.frame_display(df1)
+fd.frame_display(df2)
 ```
+
+You can also pass configuration options directly to `frame_display()`:
+
+```python
+fd.frame_display(df1, config={
+    'theme': 'ocean',
+    'enableSorting': True
+})
+```
+
+To reset the global configuration to defaults, call `configure()` with `reset=True`:
+```python
+fd.configure(reset=True)
+```
+
+### Themes
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `theme` | string | `''` | Built-in theme: `'dark'`, `'ocean'`, `'sunset'`, `'neon'`, `'minimal'`, `'contrast'` |
+| `customCSS` | string | `''` | Additional CSS rules to append after base styles |
+
+### Behavior Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `autoInit` | boolean | `true` | Automatically initialize on page load |
+| `ReInitialize` | boolean | `false` | Force reprocessing of all existing tables with new config |
+| `tableSelector` | string | `'.frame-display-table'` | CSS selector for tables to process |
+| `minColumnWidth` | number | `30` | Minimum column width in pixels |
+| `resizerWidth` | number | `8` | Width of the resize handle in pixels |
+
+### Feature Toggles
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `enableResizing` | boolean | `true` | Enable column resizing by dragging column dividers |
+| `enableSorting` | boolean | `true` | Enable sorting by clicking column headers |
+| `enableTooltips` | boolean | `true` | Show full cell content on hover |
+| `enableStickyHeader` | boolean | `true` | Keep header row visible when scrolling vertically |
+| `enableStickyIndex` | boolean | `true` | Keep index column visible when scrolling horizontally |
+
 
 ## Offline Mode
 
