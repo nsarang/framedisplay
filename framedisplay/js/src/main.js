@@ -9,9 +9,6 @@ import { version } from './version.js';
     theme: '', // '', 'dark', 'ocean', 'sunset', 'neon', 'minimal', 'contrast'
     tableSelector: '.frame-display-table',
     minColumnWidth: 30,
-    resizerWidth: 8,
-    resizerHoverColor: 'rgba(0,0,0,0.1)',
-    showHoverEffect: true,
     enableResizing: true,
     enableSorting: true,
     enableTooltips: true,

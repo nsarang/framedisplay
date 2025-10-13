@@ -376,7 +376,7 @@
   var version;
   var init_version = __esm({
     "framedisplay/js/src/version.js"() {
-      version = "1.1.6";
+      version = "1.2.0";
     }
   });
 
@@ -393,9 +393,6 @@
           // '', 'dark', 'ocean', 'sunset', 'neon', 'minimal', 'contrast'
           tableSelector: ".frame-display-table",
           minColumnWidth: 30,
-          resizerWidth: 8,
-          resizerHoverColor: "rgba(0,0,0,0.1)",
-          showHoverEffect: true,
           enableResizing: true,
           enableSorting: true,
           enableTooltips: true,
