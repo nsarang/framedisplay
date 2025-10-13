@@ -4,27 +4,33 @@ import { version } from './version.js';
 (function (global) {
   'use strict';
 
-  // Module-level settings
-  let settings = {
+  const DEFAULT_SETTINGS = {
+    customCSS: '',
+    theme: '', // '', 'dark', 'ocean', 'sunset', 'neon', 'minimal', 'contrast'
     tableSelector: '.frame-display-table',
     minColumnWidth: 30,
     resizerWidth: 8,
     resizerHoverColor: 'rgba(0,0,0,0.1)',
     showHoverEffect: true,
+    enableResizing: true,
+    enableSorting: true,
+    enableTooltips: true,
+    enableStickyHeader: true,
+    enableStickyIndex: true,
     autoInit: true,
-    allowReInit: false,
-    ...(global.FrameDisplayConfig || {}), // merge any global config
+    ReInitialize: false,
   };
+
+  let settings = { ...DEFAULT_SETTINGS };
+  applyUserSettings();
 
   // Prevent multiple executions
   if (global.FrameDisplay) {
     const existingVersion = global.FrameDisplay.version || '0.0.0';
-
-    if (settings.allowReInit === true || version.localeCompare(existingVersion, undefined, { numeric: true }) > 0) {
-      // Clean up previous instance and continue
+    // Allow re-initialization only if explicitly enabled or if version is newer
+    if (settings.ReInitialize === true || version.localeCompare(existingVersion, undefined, { numeric: true }) > 0) {
       global.FrameDisplay.destroy();
     } else {
-      // Default behavior
       return;
     }
   }
@@ -38,7 +44,21 @@ import { version } from './version.js';
     }
     const style_el = document.createElement('style');
     style_el.id = 'frame-display-styles';
-    style_el.textContent = styles;
+
+    let overrideCSS = '\n';
+    if (!settings.enableStickyHeader) {
+      overrideCSS += '.frame-display-table thead tr th { position: relative; }\n';
+    }
+    if (!settings.enableStickyIndex) {
+      overrideCSS += '.frame-display-table tbody th { position: relative; }\n';
+    }
+    if (!settings.enableStickyHeader || !settings.enableStickyIndex) {
+      overrideCSS += '.frame-display-table thead tr th:first-child { position: relative; }\n';
+    }
+
+    overrideCSS += settings.customCSS || '';
+
+    style_el.textContent = styles + overrideCSS;
     document.head.appendChild(style_el);
   }
 
@@ -48,30 +68,9 @@ import { version } from './version.js';
     headers.forEach((header, index) => {
       if (header.querySelector('.column-resizer')) return;
 
-      // Create resizer element
       const resizer = document.createElement('div');
-      resizer.className = 'column-resizer';
-      Object.assign(resizer.style, {
-        position: 'absolute',
-        top: '0',
-        right: '0',
-        width: settings.resizerWidth + 'px',
-        height: '100%',
-        cursor: 'col-resize',
-        zIndex: '20'
-      });
-
+      resizer.className = 'fd-column-resizer';
       header.appendChild(resizer);
-
-      // Add hover effect if enabled
-      if (settings.showHoverEffect) {
-        resizer.addEventListener('mouseover', () => {
-          resizer.style.backgroundColor = settings.resizerHoverColor;
-        });
-        resizer.addEventListener('mouseout', () => {
-          resizer.style.backgroundColor = '';
-        });
-      }
 
       // Prevent sort on resizer click
       resizer.addEventListener('click', function (e) {
@@ -246,23 +245,30 @@ import { version } from './version.js';
   }
 
   function processTable(table) {
-    if (table.hasAttribute('data-initialized')) {
-      return;
+    if (table.hasAttribute('data-initialized')) return;
+
+    // Apply user settings again in case invoked from the observer and settings changed
+    applyUserSettings();
+
+    if (settings.theme) {
+      table.classList.add(`theme-${settings.theme}`);
     }
-    addColumnResizing(table);
-    addTooltips(table);
-    addSorting(table);
+
+    if (settings.enableResizing) addColumnResizing(table);
+    if (settings.enableTooltips) addTooltips(table);
+    if (settings.enableSorting) addSorting(table);
+
     table.setAttribute('data-initialized', 'true');
   }
 
+  function applyUserSettings() {
+    settings = { ...DEFAULT_SETTINGS, ...(global.FrameDisplayConfig || {}) };
+  }
+
   // ------------ PUBLIC API ------------
-  function setup(config = {}) {
+  function setup() {
+    applyUserSettings();
     injectStyles();
-    // Update module-level settings
-    settings = {
-      ...settings,
-      ...config
-    };
     document.querySelectorAll(settings.tableSelector).forEach(processTable);
   }
 
@@ -291,6 +297,10 @@ import { version } from './version.js';
 
       table.removeAttribute('data-initialized');
       table.classList.remove('resizing');
+      table.className = table.className
+        .split(' ')
+        .filter(c => !c.startsWith('theme-'))
+        .join(' ');
     });
 
     const styleElement = document.getElementById('frame-display-styles');
@@ -339,13 +349,10 @@ import { version } from './version.js';
 
   // ------------ AUTO-SETUP LOGIC ------------
   function setupOnLoad() {
-    // Check if auto-setup is disabled
     if (settings.autoInit === false) {
       return;
     }
-    // Auto-setup with global config
     setup();
-    // Also watch for new tables being added
     createTableWatcher();
   }
 
@@ -360,5 +367,8 @@ import { version } from './version.js';
     setup: setup,
     destroy: destroy,
     version: version,
+    get settings() {
+      return { ...settings };
+    }
   };
 })(typeof window !== 'undefined' ? window : this);

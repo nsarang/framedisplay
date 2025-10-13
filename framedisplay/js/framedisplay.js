@@ -13,9 +13,38 @@
   var styles_default;
   var init_styles = __esm({
     "framedisplay/js/src/styles.css"() {
-      styles_default = `.table-container {
-    /* max-width: 800px; */
-    max-height: 500px;
+      styles_default = `:root {
+  --fd-bg-header: #f2f2f2;
+  --fd-bg-odd: #fff;
+  --fd-bg-even: #f5f5f5;
+  --fd-bg-index: #f8f8f8;
+  --fd-color-text: rgb(17, 23, 28);
+  --fd-color-border: #D1D9E1;
+  --fd-color-null: red;
+  --fd-bg-null: rgba(68, 83, 95, 0.1);
+  --fd-border-null: rgb(232, 236, 241);
+
+  --fd-padding-cell: 0.5em 1.0em 0.5em 0.5em;
+  --fd-padding-header: 0.75em 1.5em 0.75em 2.5em;
+
+  --fd-cell-min-width: 2em;
+  --fd-cell-max-width: 25em;
+  --fd-container-max-height: 500px;
+  --fd-font-size: 12px;
+  --fd-line-height: 16px;
+  --fd-border-width: 0.5px;
+
+  --fd-resizer-width: 8px;
+  --fd-resizer-hover-color: rgba(0,0,0,0.1);
+
+  --fd-color-header-text: rgb(17, 23, 28);
+  --fd-color-hover: #f0f4f8;
+  --fd-color-icon: currentColor;
+  --fd-icon-filter: none;
+}
+
+.table-container {
+    max-height: var(--fd-container-max-height);
     overflow: auto;
 }
 /* Base table structure */
@@ -23,10 +52,10 @@
     width: auto;
     table-layout: auto;
     font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
-    font-size: 12px;
+    font-size: var(--fd-font-size);
     font-variant-numeric: tabular-nums;
-    line-height: 16px;
-    color: rgb(17, 23, 28);
+    line-height: var(--fd-line-height);
+    color: var(--fd-color-text);
     border-collapse: separate;
     border-spacing: 0;
     border: none;
@@ -36,46 +65,52 @@
 /* Cell styling */
 .frame-display-table th,
 .frame-display-table td {
-    min-width: 2em;
-    max-width: 25em;
-    padding: 0.5em 1.0em 0.5em 0.5em;
+    min-width: var(--fd-cell-min-width);
+    max-width: var(--fd-cell-max-width);
+    padding: var(--fd-padding-cell);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    border: 0.5px solid #D1D9E1;
+    border: var(--fd-border-width) solid #D1D9E1;
 }
 /* Null cell styling */
 .frame-display-table tbody code.null-cell {
     font-size: 85%;
     background-color: rgba(68, 83, 95, 0.1);
-    border: 1px solid rgb(232, 236, 241);
+    border: 1px solid var(--fd-border-null);
     border-radius: 3px;
     padding: 2px 4px;
     display: inline-block;
-    color: red;
+    color: var(--fd-color-null);
 }
 /* Row striping for better readability */
 .frame-display-table tbody tr:nth-child(odd) td,
 .frame-display-table tbody tr:nth-child(odd) th {
-    background-color: #fff;
+    background-color: var(--fd-bg-odd);
 }
 .frame-display-table tbody tr:nth-child(even) td,
 .frame-display-table tbody tr:nth-child(even) th {
-    background-color: #f5f5f5;
+    background-color: var(--fd-bg-even);
+}
+/* Hover effect */
+.frame-display-table tbody tr:hover td,
+.frame-display-table tbody tr:hover th {
+  background-color: var(--fd-color-hover);
 }
 
 /* Header */
 .frame-display-table thead tr th {
     position: sticky;
     top: 0;
-    padding: 0.75em 1.5em 0.75em 2.5em;
+    padding: var(--fd-padding-header);
     text-align: left !important;
-    background-color: #f2f2f2;
+    background-color: var(--fd-bg-header);
     font-weight: 600;
     z-index: 10;
     cursor: pointer;
     user-select: none;
     border-collapse: separate;
+    color: var(--fd-color-header-text);
     box-shadow: inset 0px 1px 0px 0px #D1D9E1;
 }
 
@@ -91,8 +126,10 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+    filter: var(--fd-icon-filter);
 }
 
+/* Data type icons */
 .frame-display-table thead th[data-dtype="int"]::before {
     background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJjdXJyZW50Q29sb3IiIGQ9Ik0xMy4wMDMgNy43NTRhLjc1Ljc1IDAgMCAxIC43NS0uNzVoNS4yMzJhLjc1Ljc1IDAgMCAxIC41MyAxLjI4bC0yLjc3NiAyLjc3N2MuNTUuMDk3IDEuMDU3LjI1MyAxLjQ5Mi40ODNjLjkwNS40NzcgMS41MDQgMS4yODQgMS41MDQgMi40MThjMCAuOTY2LS40NzEgMS43NS0xLjE3MiAyLjI3Yy0uNjg3LjUxMS0xLjU4Ny43Ny0yLjUyMS43N2MtMS4zNjcgMC0yLjI3NC0uNTI4LTIuNjY3LS43NTZhLjc1Ljc1IDAgMCAxIC43NTUtMS4yOTdjLjMzMS4xOTMuOTUzLjU1MyAxLjkxMi41NTNjLjY3MyAwIDEuMjQzLS4xODggMS42MjctLjQ3M2MuMzctLjI3NS41NjYtLjYzNS41NjYtMS4wNjdjMC0uNS0uMjE5LS44MzYtLjcwMy0xLjA5MWMtLjUzOC0uMjg0LTEuMzc1LS40NDMtMi40NzEtLjQ0M2EuNzUuNzUgMCAwIDEtLjUzLTEuMjhsMi42NDMtMi42NDRoLTMuNDIxYS43NS43NSAwIDAgMS0uNzUtLjc1TTcuODggMTUuMjE1YTEuNCAxLjQgMCAwIDAtMS40NDYuODNhLjc1Ljc1IDAgMCAxLTEuMzctLjYxYTIuOSAyLjkgMCAwIDEgMi45ODYtMS43MWMuNTg5LjA2IDEuMTM5LjMyMyAxLjU1Ny43NDNjLjQzNC40NDYuNjg1IDEuMDU4LjY4NSAxLjc3OGMwIDEuNjQxLTEuMjU0IDIuNDM3LTIuMTIgMi45ODZjLS41MzguMzQxLTEuMTguNjk0LTEuNDk1IDEuMjczSDkuNzVhLjc1Ljc1IDAgMCAxIDAgMS41aC00YS43NS43NSAwIDAgMS0uNzUtLjc1YzAtMS43OTkgMS4zMzctMi42MyAyLjI0My0zLjIxYzEuMDMyLS42NTkgMS41NS0xLjAzMSAxLjU1LTEuOGMwLS4zNTUtLjExNi0uNTg0LS4yNi0uNzMyYTEuMDcgMS4wNyAwIDAgMC0uNjUyLS4yOThabS4yMzQtMTMuMTIxYS43NS43NSAwIDAgMSAuMzg2LjY1NlY5aDEuMjUyYS43NS43NSAwIDAgMSAwIDEuNUg1Ljc1YS43NS43NSAwIDAgMSAwLTEuNUg3VjQuMTAzbC0uODUzLjUzM2EuNzQ5Ljc0OSAwIDEgMS0uNzk1LTEuMjcybDItMS4yNWEuNzUuNzUgMCAwIDEgLjc2Mi0uMDIiLz48L3N2Zz4=');
 }
@@ -122,7 +159,7 @@
 .frame-display-table tbody th {
     position: sticky;
     left: 0;
-    background-color: #f8f8f8;
+    background-color: var(--fd-bg-index);
     z-index: 1;
     text-align: center;
     box-shadow: inset 1px 0px 0px 0px #D1D9E1;
@@ -154,6 +191,183 @@
     font-size: 1em;
     opacity: 0.7;
 }
+
+/* Resizer handle */
+.fd-column-resizer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: var(--fd-resizer-width);
+  height: 100%;
+  cursor: col-resize;
+  z-index: 20;
+}
+.fd-column-resizer:hover {
+  background-color: var(--fd-resizer-hover-color);
+}
+
+/* ============================================
+   DARK THEME (GitHub Dark Dimmed inspired)
+   ============================================ */
+.theme-dark.frame-display-table {
+  --fd-bg-header: #22272e;
+  --fd-bg-odd: #2d333b;
+  --fd-bg-even: #22272e;
+  --fd-bg-index: #22272e;
+  --fd-color-text: #adbac7;
+  --fd-color-header-text: #cdd9e5;
+  --fd-color-border: #444c56;
+  --fd-color-hover: #373e47;
+  --fd-color-null: #f47067;
+  --fd-bg-null: rgba(244, 112, 103, 0.15);
+  --fd-border-null: #f47067;
+  --fd-icon-filter: brightness(0) invert(0.8);
+  --fd-resizer-hover-color: rgba(99, 110, 123, 0.3);
+}
+
+/* ============================================
+   OCEAN THEME (Professional blue-teal)
+   ============================================ */
+.theme-ocean.frame-display-table {
+  --fd-bg-header: #0f4c75;
+  --fd-bg-odd: #f0f8ff;
+  --fd-bg-even: #e8f4f8;
+  --fd-bg-index: #e1f1f5;
+  --fd-color-text: #1b262c;
+  --fd-color-header-text: #ffffff;
+  --fd-color-border: #3282b8;
+  --fd-color-hover: #d4ebf2;
+  --fd-color-null: #d9534f;
+  --fd-bg-null: rgba(217, 83, 79, 0.1);
+  --fd-border-null: #d9534f;
+  --fd-icon-filter: brightness(0) invert(1);
+  --fd-resizer-hover-color: rgba(50, 130, 184, 0.3);
+}
+
+.theme-ocean.frame-display-table thead th {
+  font-weight: 600;
+}
+
+/* ============================================
+   SUNSET THEME (Warm orange-rose)
+   ============================================ */
+.theme-sunset.frame-display-table {
+  --fd-bg-header: #d4504c;
+  --fd-bg-odd: #fff8f3;
+  --fd-bg-even: #ffe8db;
+  --fd-bg-index: #ffdcc7;
+  --fd-color-text: #2d1b14;
+  --fd-color-header-text: #ffffff;
+  --fd-color-border: #e8a598;
+  --fd-color-hover: #ffd4bc;
+  --fd-color-null: #c73e1d;
+  --fd-bg-null: rgba(199, 62, 29, 0.1);
+  --fd-border-null: #c73e1d;
+  --fd-icon-filter: brightness(0) invert(1);
+  --fd-resizer-hover-color: rgba(212, 80, 76, 0.3);
+}
+
+.theme-sunset.frame-display-table thead th {
+  font-weight: 600;
+}
+
+/* ============================================
+   NEON THEME (Cyberpunk cyan-magenta)
+   ============================================ */
+.theme-neon.frame-display-table {
+  --fd-bg-header: #1a1a2e;
+  --fd-bg-odd: #16213e;
+  --fd-bg-even: #0f1624;
+  --fd-bg-index: #0f1624;
+  --fd-color-text: #00fff5;
+  --fd-color-header-text: #ff006e;
+  --fd-color-border: #00fff5;
+  --fd-color-hover: #1f2b3e;
+  --fd-color-null: #ff006e;
+  --fd-bg-null: rgba(255, 0, 110, 0.2);
+  --fd-border-null: #ff006e;
+  --fd-icon-filter: brightness(0) saturate(100%) invert(27%) sepia(99%) saturate(7471%) hue-rotate(318deg) brightness(101%) contrast(106%);
+  --fd-resizer-hover-color: rgba(0, 255, 245, 0.4);
+}
+
+.theme-neon.frame-display-table thead th {
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(255, 0, 110, 0.5);
+}
+
+.theme-neon.frame-display-table tbody tr:hover td,
+.theme-neon.frame-display-table tbody tr:hover th {
+  box-shadow: 0 0 15px rgba(0, 255, 245, 0.1);
+}
+
+/* ============================================
+   MINIMAL THEME
+   ============================================ */
+.theme-minimal.frame-display-table {
+  --fd-bg-header: #fafafa;
+  --fd-bg-odd: #ffffff;
+  --fd-bg-even: #ffffff;
+  --fd-bg-index: #fafafa;
+  --fd-color-text: #1a1a1a;
+  --fd-color-header-text: #1a1a1a;
+  --fd-color-border: transparent;
+  --fd-color-hover: #f5f5f5;
+  --fd-border-width: 0;
+  --fd-resizer-hover-color: rgba(0, 0, 0, 0.08);
+}
+
+.theme-minimal.frame-display-table th,
+.theme-minimal.frame-display-table td {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.theme-minimal.frame-display-table thead th {
+  border-bottom: 2px solid #1a1a1a;
+  font-weight: 600;
+}
+
+.theme-minimal.frame-display-table tbody th {
+  font-weight: 500;
+  box-shadow: none;
+}
+
+.theme-minimal.frame-display-table thead tr th:first-child {
+  box-shadow: none;
+}
+
+/* ============================================
+   CONTRAST THEME (High Accessibility)
+   ============================================ */
+.theme-contrast.frame-display-table {
+  --fd-bg-header: #000000;
+  --fd-bg-odd: #000000;
+  --fd-bg-even: #000000;
+  --fd-bg-index: #000000;
+  --fd-color-text: #ffffff;
+  --fd-color-header-text: #ffff00;
+  --fd-color-border: #ffffff;
+  --fd-color-hover: #333333;
+  --fd-border-width: 2px;
+  --fd-color-null: #ffff00;
+  --fd-bg-null: rgba(255, 255, 0, 0.2);
+  --fd-border-null: #ffff00;
+  --fd-icon-filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(10000%) hue-rotate(0deg);
+  --fd-resizer-hover-color: rgba(255, 255, 0, 0.5);
+}
+
+.theme-contrast.frame-display-table {
+  border: 3px solid #ffffff;
+}
+
+.theme-contrast.frame-display-table thead th {
+  font-weight: bold;
+  font-size: 1.05em;
+}
+
+.theme-contrast.frame-display-table thead th.sort-asc::after,
+.theme-contrast.frame-display-table thead th.sort-desc::after {
+  color: #ffff00;
+}
 `;
     }
   });
@@ -173,20 +387,28 @@
       init_version();
       (function(global) {
         "use strict";
-        let settings = {
+        const DEFAULT_SETTINGS = {
+          customCSS: "",
+          theme: "",
+          // '', 'dark', 'ocean', 'sunset', 'neon', 'minimal', 'contrast'
           tableSelector: ".frame-display-table",
           minColumnWidth: 30,
           resizerWidth: 8,
           resizerHoverColor: "rgba(0,0,0,0.1)",
           showHoverEffect: true,
+          enableResizing: true,
+          enableSorting: true,
+          enableTooltips: true,
+          enableStickyHeader: true,
+          enableStickyIndex: true,
           autoInit: true,
-          allowReInit: false,
-          ...global.FrameDisplayConfig || {}
-          // merge any global config
+          ReInitialize: false
         };
+        let settings = { ...DEFAULT_SETTINGS };
+        applyUserSettings();
         if (global.FrameDisplay) {
           const existingVersion = global.FrameDisplay.version || "0.0.0";
-          if (settings.allowReInit === true || version.localeCompare(existingVersion, void 0, { numeric: true }) > 0) {
+          if (settings.ReInitialize === true || version.localeCompare(existingVersion, void 0, { numeric: true }) > 0) {
             global.FrameDisplay.destroy();
           } else {
             return;
@@ -199,7 +421,18 @@
           }
           const style_el = document.createElement("style");
           style_el.id = "frame-display-styles";
-          style_el.textContent = styles_default;
+          let overrideCSS = "\n";
+          if (!settings.enableStickyHeader) {
+            overrideCSS += ".frame-display-table thead tr th { position: relative; }\n";
+          }
+          if (!settings.enableStickyIndex) {
+            overrideCSS += ".frame-display-table tbody th { position: relative; }\n";
+          }
+          if (!settings.enableStickyHeader || !settings.enableStickyIndex) {
+            overrideCSS += ".frame-display-table thead tr th:first-child { position: relative; }\n";
+          }
+          overrideCSS += settings.customCSS || "";
+          style_el.textContent = styles_default + overrideCSS;
           document.head.appendChild(style_el);
         }
         __name(injectStyles, "injectStyles");
@@ -208,25 +441,8 @@
           headers.forEach((header, index) => {
             if (header.querySelector(".column-resizer")) return;
             const resizer = document.createElement("div");
-            resizer.className = "column-resizer";
-            Object.assign(resizer.style, {
-              position: "absolute",
-              top: "0",
-              right: "0",
-              width: settings.resizerWidth + "px",
-              height: "100%",
-              cursor: "col-resize",
-              zIndex: "20"
-            });
+            resizer.className = "fd-column-resizer";
             header.appendChild(resizer);
-            if (settings.showHoverEffect) {
-              resizer.addEventListener("mouseover", () => {
-                resizer.style.backgroundColor = settings.resizerHoverColor;
-              });
-              resizer.addEventListener("mouseout", () => {
-                resizer.style.backgroundColor = "";
-              });
-            }
             resizer.addEventListener("click", function(e) {
               e.stopPropagation();
             });
@@ -368,21 +584,24 @@
         }
         __name(sortRowsByColumn, "sortRowsByColumn");
         function processTable(table) {
-          if (table.hasAttribute("data-initialized")) {
-            return;
+          if (table.hasAttribute("data-initialized")) return;
+          applyUserSettings();
+          if (settings.theme) {
+            table.classList.add(`theme-${settings.theme}`);
           }
-          addColumnResizing(table);
-          addTooltips(table);
-          addSorting(table);
+          if (settings.enableResizing) addColumnResizing(table);
+          if (settings.enableTooltips) addTooltips(table);
+          if (settings.enableSorting) addSorting(table);
           table.setAttribute("data-initialized", "true");
         }
         __name(processTable, "processTable");
-        function setup(config = {}) {
+        function applyUserSettings() {
+          settings = { ...DEFAULT_SETTINGS, ...global.FrameDisplayConfig || {} };
+        }
+        __name(applyUserSettings, "applyUserSettings");
+        function setup() {
+          applyUserSettings();
           injectStyles();
-          settings = {
-            ...settings,
-            ...config
-          };
           document.querySelectorAll(settings.tableSelector).forEach(processTable);
         }
         __name(setup, "setup");
@@ -405,6 +624,7 @@
             }
             table.removeAttribute("data-initialized");
             table.classList.remove("resizing");
+            table.className = table.className.split(" ").filter((c) => !c.startsWith("theme-")).join(" ");
           });
           const styleElement = document.getElementById("frame-display-styles");
           if (styleElement) {
@@ -457,7 +677,10 @@
         global.FrameDisplay = {
           setup,
           destroy,
-          version
+          version,
+          get settings() {
+            return { ...settings };
+          }
         };
       })(typeof window !== "undefined" ? window : exports);
     }
