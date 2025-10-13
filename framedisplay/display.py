@@ -1,4 +1,5 @@
 import importlib.resources
+import json
 from html import escape
 
 import pandas as pd
@@ -20,6 +21,43 @@ def initialize():
     with open(JS_FILEPATH, "r", encoding="utf-8") as f:
         js_content = f.read()
     display(HTML(f'<script type="text/javascript">{js_content}</script>'))
+
+
+def configure(config: dict = None, reset: bool = False, return_html: bool = False) -> None:
+    """
+    Configure FrameDisplay settings globally.
+
+    Parameters
+    ----------
+    config : dict
+        Configuration options for FrameDisplay. These will be passed to the JavaScript
+        as a global variable `FrameDisplayConfig`. See the documentation for available options.
+    reset : bool, optional
+        If True, resets the FrameDisplayConfig overrides to empty before applying the new config.
+        This is useful if you want to ensure that only the provided config options are used,
+        without any previously set options interfering. Defaults to False.
+    return_html : bool, optional
+        If True, return the HTML string instead of displaying it. Defaults to False.
+    """
+    if config is None and not reset:
+        raise ValueError("Either `config` must be provided or `reset` must be True.")
+
+    config_script = ""
+    if reset:
+        config_script += """
+            <script>
+                window.FrameDisplayConfig = {};
+            </script>
+        """
+    config_json = json.dumps(config)
+    config_script += f"""
+        <script>
+            window.FrameDisplayConfig = Object.assign(window.FrameDisplayConfig || {{}}, {config_json});
+        </script>
+    """
+    if return_html:
+        return config_script
+    display(HTML(config_script))
 
 
 def get_type(series: pd.Series) -> str:
@@ -82,7 +120,12 @@ def dataframe_to_html(df: pd.DataFrame) -> str:
 
 
 def frame_display(
-    df: pd.DataFrame, jspath: str = None, embed_style: str = None, return_html: bool = False
+    df: pd.DataFrame,
+    jspath: str = None,
+    embed_style: str = None,
+    return_html: bool = False,
+    config: dict = None,
+    reset_config: bool = False,
 ) -> None:
     """
     Display a DataFrame as HTML in Jupyter Notebook.
@@ -100,6 +143,13 @@ def frame_display(
         - 'all': Embed both JavaScript and CSS inline
     return_html : bool, optional
         If True, return the HTML string instead of displaying it. Defaults to False.
+    config : dict, optional
+        Configuration options for FrameDisplay. These will be passed to the JavaScript
+        as a global variable `FrameDisplayConfig`. See the documentation for available options.
+    reset_config : bool, optional
+        If True, resets the FrameDisplayConfig overrides to empty before applying the new config.
+        This is useful if you want to ensure that only the provided config options are used,
+        without any previously set options interfering. Defaults to False.
 
     Returns
     -------
@@ -107,6 +157,11 @@ def frame_display(
         If return_html is True, returns the HTML string. Otherwise, displays the content
         and returns None.
     """
+    if config is not None or reset_config:
+        config_script = configure(config or {}, reset=reset_config, return_html=True)
+    else:
+        config_script = ""
+
     if embed_style is not None:
         if embed_style == "css_only":
             script_content = f"""
@@ -130,6 +185,7 @@ def frame_display(
 
     html_content = f"""
         <div class="table-container">
+            {config_script}
             {script_content}
             {dataframe_to_html(df)}
         </div>
