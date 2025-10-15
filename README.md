@@ -101,7 +101,7 @@ You can also pass configuration options directly to `frame_display()`:
 ```python
 fd.frame_display(df1, config={
     'theme': 'ocean',
-    'enableSorting': True
+    'enableSorting': False
 })
 ```
 
@@ -125,7 +125,6 @@ fd.configure(reset=True)
 | `ReInitialize` | boolean | `false` | Force reprocessing of all existing tables with new config |
 | `tableSelector` | string | `'.frame-display-table'` | CSS selector for tables to process |
 | `minColumnWidth` | number | `30` | Minimum column width in pixels |
-| `resizerWidth` | number | `8` | Width of the resize handle in pixels |
 
 ### Feature Toggles
 
