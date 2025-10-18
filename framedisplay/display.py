@@ -195,7 +195,20 @@ def frame_display(
     display(HTML(html_content))
 
 
-def integrate_with_pandas(**kwargs):
+def _get_dataframe_subset(
+    df: pd.DataFrame, max_cells: int = None, max_rows: int = None
+) -> pd.DataFrame:
+    assert max_cells is not None or max_rows is not None
+    if max_cells is not None:
+        nrows, ncols = df.shape
+        nrows = max(1, max_cells // ncols)
+        if max_rows is not None:
+            nrows = min(nrows, max_rows)
+        return df.head(nrows)
+    return df.head(max_rows)
+
+
+def integrate_with_pandas(max_cells: int = 10000, max_rows: int = None, **kwargs) -> None:
     """
     This function patches the pandas DataFrame class to use FrameDisplay for HTML
     rendering in Jupyter notebooks and other environments that support rich display.
@@ -211,4 +224,10 @@ def integrate_with_pandas(**kwargs):
     -----
     This modifies the global pandas DataFrame._repr_html_ method.
     """
-    pd.DataFrame._repr_html_ = lambda df: frame_display(df, return_html=True, **kwargs)
+    if not hasattr(pd.DataFrame, "_repr_html_original"):
+        pd.DataFrame._repr_html_original = pd.DataFrame._repr_html_
+    pd.DataFrame._repr_html_ = lambda df: frame_display(
+        _get_dataframe_subset(df, max_cells=max_cells, max_rows=max_rows),
+        return_html=True,
+        **kwargs,
+    )
