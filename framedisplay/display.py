@@ -1,11 +1,14 @@
 import importlib.resources
 import json
+import logging
 from html import escape
 
 import pandas as pd
 from IPython.display import HTML, display
 
 import framedisplay
+
+LOG = logging.getLogger(__name__)
 
 from .__version__ import __version__
 
@@ -21,6 +24,7 @@ def initialize():
     with open(JS_FILEPATH, "r", encoding="utf-8") as f:
         js_content = f.read()
     display(HTML(f'<script type="text/javascript">{js_content}</script>'))
+    LOG.info("FrameDisplay JavaScript initialized.")
 
 
 def configure(config: dict = None, reset: bool = False, return_html: bool = False) -> None:
@@ -198,6 +202,7 @@ def frame_display(
 def _get_dataframe_subset(
     df: pd.DataFrame, max_cells: int = None, max_rows: int = None
 ) -> pd.DataFrame:
+    "Helper function to get a subset of the DataFrame based on max_cells or max_rows."
     assert max_cells is not None or max_rows is not None
     if max_cells is not None:
         nrows, ncols = df.shape
@@ -217,6 +222,9 @@ def integrate_with_pandas(max_cells: int = 10000, max_rows: int = None, **kwargs
 
     Parameters
     ----------
+    max_cells : int, optional
+        Maximum number of cells to display in the DataFrame. If the DataFrame exceeds
+        this size, it will be truncated. Defaults to 10000.
     **kwargs : dict
         Additional keyword arguments to pass to `frame_display`.
 
